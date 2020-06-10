@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+
+{% block content %}
+	
+<div class="container d-flex justify-content-center">
+<div class="flex-grow-1 w">
+	<div class="card card-body">		
+		{% for e in email_list %}
+			{% if e.selectedEmailList == True%}
+				TO:<br><br> <h4>{{e}}</h4>
+			{% endif %}
+		{% endfor %}
+		<hr>
+		<strong>{{email}}</strong>
+		<hr>
+		{{email.emailDraftMessage}}
+		<hr>
+		<form action="" method="POST">
+ 		 	{% csrf_token %}
+			<a href="{% url 'home' %}" class="btn btn-secondary">Back!</a>
+			<button type="submit" class="btn btn-info">Send Email ✈</button>
+		</form>
+	</div>
+</div>
+</div>
+{% endblock %}

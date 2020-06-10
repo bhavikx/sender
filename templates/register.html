@@ -1,0 +1,80 @@
+<style type="text/css">
+
+	body{
+		background-color: #bf3a30;
+		background-image: linear-gradient(315deg, #bf3a30 0%, #864ba2 74%);
+		display: flex;
+		justify-content: center;
+ 		align-items: center;
+	}
+
+	.c{
+		color: white;
+	}
+
+</style>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>register</title>
+</head>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<body>
+
+<div class="container" align="center">
+<div class="card" style=" max-width: 380px; background: transparent;">
+	<div class="card-body border border-white rounded-lg">
+		<h3 class="text-monospace">
+			register
+		</h3><br>
+		<div class="card-text align-middle" style="max-width: 300px">
+				<form method="POST" action="" style="">
+						{% csrf_token %}
+					<div class="input-group mb-2">
+						{{form.username}}
+					</div>
+					<div class="input-group mb-2">
+						{{form.email}}
+					</div>
+					<div class="input-group mb-2">
+						{{form.password1}}
+					</div>
+					<div class="input-group mb-2">
+						{{form.password2}}
+					</div>
+					<br>
+
+					<button type="submit" class="btn btn-dark" name="">register</button>
+				</form>
+			
+				<div class="text-left">{{form.errors}}</div>
+
+				<p>already have an account?
+				<a href="{% url 'login' %}" class="c">login</a>
+				</p>
+		</div>
+	</div>
+</div>
+</div>
+
+</body>
+</html>
+
+
+<script>
+		var form_fields = document.getElementsByTagName('input')
+		form_fields[1].placeholder='username';
+		form_fields[2].placeholder='email';
+		form_fields[3].placeholder='password';
+		form_fields[4].placeholder='re-enter Password';
+
+
+		for (var field in form_fields){	
+			form_fields[field].className += ' form-control'
+		}
+</script>

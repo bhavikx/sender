@@ -1,0 +1,40 @@
+{% load static %}
+<style type="text/css">
+	
+	.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+ 	   	color: red;
+    	background-color: #d9d9d9;
+	}
+
+</style>
+
+<div class="container mb-3 pt-1">
+	<div class="shadow rounded bg-danger">
+	<div class="row pt-1">
+		<div class="col">
+			<a class="nav-item nav-link" href="{% url 'home' %}" 
+			style="font-family: Comic Sans MS; color: white; font-size: 1.44rem">
+				<font>Sender</font>
+			</a>
+		</div>
+		<div class="col-sm-8">
+		    <div class="shadow bg-light rounded" style="padding: 3px">
+			    <div class="nav nav-pills" >
+			    	<a class="nav-item nav-link text-monospace pt-2 {{home}}" href="{% url 'home' %}" 
+			        style="color: black">Home</a>
+			        <a class="nav-item nav-link text-monospace pt-2 {{emailsetting}}" href="{% url 'set-user' %}" 
+					style="color: black">Email-Settings</a>
+
+					<li class="nav-item dropdown text-monospace">
+					    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="color: black">Logout</a>
+					    <div class="dropdown-menu dropdown-menu-right">
+					     	<a class="dropdown-item" href="{% url 'logout' %}">hey, {{request.user}} Logout</a>
+					    </div>
+					</li>
+
+			    </div>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>	

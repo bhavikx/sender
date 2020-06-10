@@ -1,0 +1,107 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+	
+<div class="container rounded-lg shadow-lg" style="width: 92%;padding: 10px">
+
+	{% for message in messages %}
+		<p>{{message}}</p>
+	{% endfor %}
+
+<div class="row">
+	<div class="col">
+		<div class="border bg-light rounded-lg p-2 mb-2">	
+			<font size=6rem class="text-monospace">EMAIL DRAFTS</font>
+		</div>
+		<a href="{%url 'create-email-draft' %}" class="btn btn-primary mb-2" style="width: 100%">
+			<svg class="bi bi-pencil-square" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+		  	<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+		  	<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+			</svg>
+			New Email Draft
+		</a>
+		{% for draft in drafts %}
+			<div class="btn-group bg-light rounded-lg border shadow-lg mb-2" align="center" style="width: 100%">
+
+			<a class="btn btn-light rounded-lg text-left" href="{% url 'send-email' draft.id %}" style="width: 95%">
+					
+					<svg class="bi bi-file-text" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/>
+					<path fill-rule="evenodd" d="M4.5 10.5A.5.5 0 0 1 5 10h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+					</svg>
+					<strong>
+					{{draft}}
+					</strong> <br>
+					<font size=1.8rem>{{draft.timeDraftCreated}}</font>
+					<hr>
+					<p style="overflow-wrap: break-word;word-wrap: break-word;">{{draft.emailDraftMessage}} </p>
+			</a>
+			<a class="btn btn-light rounded-lg" href="{% url 'edit-email-draft' draft.id %}">
+					<svg class="bi bi-three-dots-vertical" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+					</svg>
+			</a>
+					
+			</div><br>
+		{% endfor %}		
+	</div>
+
+	<div class="col-sm-5">
+		<div class="border rounded-lg bg-light p-2 mb-2">
+			<font size=6rem class="text-monospace">EMAIL LISTS</font>
+		</div>
+		<a href="{%url 'first-step' %}" class="btn btn-primary item-right mb-2"  style="width: 100%">
+			<svg class="bi bi-plus" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+ 			<path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
+  			<path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
+			</svg>
+			New Email List
+		</a>
+		{% for email in email_list %}
+			{% if email.selectedEmailList == False %}
+				<div class="btn-group bg-light rounded-lg shadow-lg border mb-2" align=center style="width: 100%">
+					<a class="btn btn-light rounded-lg shadow-lg text-left" href="{% url 'select-email-list' email.id %}" style="width: 95%">
+						<h4>
+						<svg class="bi bi-person-lines-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7 1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm2 9a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+						</svg>
+						{{email}}
+						</h4>
+						<font size=1.8rem>tap to set - Default To</font>
+					</a>
+					<a href="{% url 'edit-email-list' email.id %}" class="btn btn-light rounded-lg ">
+						<svg class="bi bi-three-dots-vertical" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  						<path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+						</svg>
+					</a>
+				</div><br>
+			{% endif %}
+			{% if email.selectedEmailList == True %}
+				<div class="btn-group bg-danger rounded-lg shadow-lg mb-2" align=center style="width: 100%">
+					<a class="btn btn-danger rounded-lg text-left" href="{% url 'unselect-email-list' %}" style="width: 95%">
+						<h4>
+						<svg class="bi bi-person-lines-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7 1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm2 9a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+						</svg>
+						{{email}}
+						</h4>
+						<font size=1.8rem>tap to unset - Default To</font>
+					</a>
+					<a href="{% url 'edit-email-list' email.id %}" class="btn btn-danger rounded-lg">
+						<svg class="bi bi-three-dots-vertical" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+ 						<path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+						</svg>
+					</a>
+				</div><br>
+			{% endif %}
+		{% endfor %}	
+	</div>
+</div>
+
+</div>
+
+{% endblock %}

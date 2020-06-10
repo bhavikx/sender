@@ -1,0 +1,64 @@
+<style type="text/css">
+
+	body{
+		background-color: #42378f;
+		background-image: linear-gradient(315deg, #42378f 0%, #f53844 74%);
+		display: flex;
+		justify-content: center;
+ 		align-items: center;
+	}
+
+	.c{
+		color: white;
+	}
+
+</style>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>login</title>
+</head>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+<body>
+
+<div class="container" align="center">
+<div class="card border border-white rounded-lg" style=" max-width: 380px; background: transparent;">
+	<div class="card-body ">
+		<h3 class="text-monospace">
+			login
+		</h3><br>
+		<div class="card-text align-middle" style="max-width: 300px">
+				<form method="POST" action="" style="">
+						{% csrf_token %}
+					<div class="input-group mb-3">
+						<input type="text" name="username" placeholder="username" class="form-control">
+					</div>
+
+					<div class="input-group mb-2">
+						<input type="password" name="password" placeholder="password" class="form-control">
+					</div>
+					<br>
+
+					<button type="submit" class="btn btn-dark" name="">login</button>
+				</form>					
+
+				<p>don't have an account?
+				<a href="{% url 'register' %}" class="c">register</a>
+				</p>
+
+				{% for message in messages %}
+					<div class="c">{{message}}</div>
+				{% endfor %}
+
+		</div>
+	</div>
+</div>
+</div>
+
+</body>
+</html>

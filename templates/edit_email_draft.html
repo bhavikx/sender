@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container d-flex justify-content-center">
+<div class="flex-grow-1 w">
+	<div class="border rounded-lg bg-light p-2 mb-2">		
+		<h3 class="text-monospace text-center">Make Changes</h3>
+	</div>
+	<form method="POST" action="">
+		{% csrf_token %}
+		{{ form | crispy }}
+		<button class="btn btn-success" type="submit">Save Changes</button>
+		<a class="btn btn-danger" href="{% url 'delete-email-draft' email.id %}">
+			Delete
+		</a>
+		<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+	</form>
+</div>
+</div>
+{% endblock %}

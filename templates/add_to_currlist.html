@@ -1,0 +1,39 @@
+{% extends 'main.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+	 
+<div class="container d-flex justify-content-center">
+<div class="flex-grow-1 w">
+	<div class="border rounded-lg bg-light p-2 mb-2">	
+		<h3 class="text-monospace text-center">Add To List : {{ email_list }}</h3>
+	</div>
+	<form action="" method="POST" class="mb-2">
+		{% csrf_token %}
+		{{ form|crispy }}
+
+		<button type="submit" class="btn btn-primary mb-2" style="width: 100%">Add</button> <br>
+		<a href="{% url 'delete-edited-email-list' email_list.id %}" class="btn btn-warning">Don't Save, Go Back!</a>
+		<a href="{% url 'save-edited-email-list' email_list.id%}" class="btn btn-success">Save List</a>
+	</form>
+	
+	{% if le != 0 %}
+		<hr>	
+		<h6>new items being added</h6>
+		{% for t in temp %}
+			{{t}}<br>
+		{% endfor %}
+	{% endif %}
+	
+	<hr>
+	<h6>items in list</h6>
+
+	{% for e in email_items %}
+		{{e}}<br>
+	{% endfor %}
+
+</div>
+</div>
+
+{% endblock %}
