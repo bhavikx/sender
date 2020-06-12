@@ -15,7 +15,7 @@
 		{{ form.userPassword|as_crispy_field }}
 		
 		<button type="submit" class="btn btn-success">Save Changes</button>
-		<a href="{% url 'delete-email' email_from_list.id %}" class="btn btn-danger">Delete</a>
+		<a href="{% url 'delete-email' email_from.id %}" class="btn btn-danger">Delete</a>
 		<a href="{% url 'set-user' %}" class="btn btn-secondary">Back</a>
 	</form>
 </div>

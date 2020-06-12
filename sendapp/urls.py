@@ -3,12 +3,13 @@ from .views import *
 
 urlpatterns = [
     path('', homeView, name="home"),
+
     path('set-user/', EmailFromListView, name="set-user"),
     
     path('default-email/<int:uid>/', defaultEmailView, name="default-email"),
     path('unset-default/<int:uid>/', unsetDefaultView, name="unset-default"),
-    path('edit-email/<int:eid>/', editEmailView, name="edit-email"),
-    path('delete-email/<int:did>/', deleteEmailView, name="delete-email"),
+    path('edit-email/<int:eid>/', editEmailFromView, name="edit-email"),
+    path('delete-email/<int:did>/', deleteEmailFromView, name="delete-email"),
 
     path('create-email-draft/', createEmailDraftView, name="create-email-draft"),
     path('edit-email-draft/<int:eid>/', editEmailDraftView, name="edit-email-draft"),

@@ -12,14 +12,14 @@
 	2nd step (1 / 2) <hr>
 	<form action="" method="POST" class="mb-2">
 		{% csrf_token %}
-		{{ form|crispy }}
+		{{ temp_form|crispy }}
 
 		<button type="submit" class="btn btn-primary mb-2" style="width: 100%">Add</button> <br>
 		<a href="{% url 'delete-email-list' %}" class="btn btn-warning">Don't Save, Go Back!</a>
 		<a href="{% url 'save-email-list' %}" class="btn btn-success">Save List</a> 
 	</form>
 
-	{% for i in item %}
+	{% for i in temp_email_list %}
 		<hr>
 		{{ i }}
 	{% endfor %}

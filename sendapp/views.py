@@ -59,12 +59,9 @@ def logoutView(request):
 def homeView(request):
 	u = UserProfile.objects.get(user = request.user)
 
-
-	drafts = EmailDraft.objects.filter(user = u).order_by('-timeDraftCreated')
+	drafts = EmailDraft.objects.filter(user = u)
 	email_list = EmailList.objects.filter(user = u)	
 
-	"""print(email_list.user)
-				print(request.user.userprofile)"""
 	context = {
 		'home' : 'active',
 		'drafts' : drafts,
@@ -140,11 +137,10 @@ def createEmailDraftView(request):
 		form = EmailDraftForm(request.POST)
 
 		if form.is_valid():
-			u = form.save(commit=False)
-			u.user = request.user.userprofile
-			print("request.user")
-			print(u.user)
-			u.save()
+			obj = form.save(commit=False)
+			obj.user = request.user.userprofile
+			obj.save()
+
 			messages.success(request, 'draft added to list.')
 			return redirect('home')
 
@@ -187,64 +183,64 @@ def deleteEmailDraftView(request, eid):
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def EmailFromListView(request):
+	u = UserProfile.objects.get(user = request.user)
+
+	email_from_list = EmailFromList.objects.filter(user = u)
 	form = EmailFromListForm()
-	item = EmailFromList.objects.all()
-
-	context = {
-
-		'emailsetting' : 'active',
-		'form' : form,
-		'item' : item
-	}
 
 	if request.method == 'POST':
-		form = SetEmailToListForm(request.POST)
-		item = SetEmailToList.objects.all()
+		form = EmailFromListForm(request.POST)
 
 		if form.is_valid():
-			form.save()
+			obj = form.save(commit=False)
+			obj.user = request.user.userprofile
+			obj.save()
 
-			context = {
-				'form' : form,
-				'item' : item
-			}
 			messages.success(request, 'Email Added To List.')
-			return redirect('/set-user/', context)
+			return redirect('set-user')
 
+	context = {
+		'emailsetting' : 'active',
+		'form' : form,
+		'email_from_list' : email_from_list
+	}
 	return render(request, 'email_settings.html', context)
 
 def defaultEmailView(request, uid):
+	u = UserProfile.objects.get(user = request.user)
 
-	item = SetEmailToList.objects.get(id=uid)
-	all_item = SetEmailToList.objects.all()
-	for i in all_item:
+	email_from_list = EmailFromList.objects.filter(user = u)
+	email_from = EmailFromList.objects.get(id=uid)
+
+	for i in email_from_list:
+		print(i)
+		print(i.isDefault)
 		i.isDefault = False
 		i.save()
 
-	item.isDefault = True
-	item.save()
+	email_from.isDefault = True
+	email_from.save()
 
 	return redirect('set-user')
 
 
 def unsetDefaultView(request, uid):
+	email_from = SetEmailToList.objects.get(id = uid)
 
-	item = SetEmailToList.objects.get(id = uid)
-
-	item.isDefault = False
-	item.save()
+	email_from.isDefault = False
+	email_from.save()
 
 	return redirect("set-user")
 
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
-def editEmailView(request, eid):
-	item = SetEmailToList.objects.get(id = eid)
-	form = SetEmailToListForm(instance = item)
+def editEmailFromView(request, eid):
+	email_from = EmailFromList.objects.get(id = eid)
+	form = EmailFromListForm(instance = email_from)
 
 	if request.method == 'POST':
-		form = SetEmailToListForm(request.POST, instance = item)
+		form = EmailFromListForm(request.POST, instance = email_from)
 
 		if form.is_valid:
 			form.save()
@@ -253,16 +249,18 @@ def editEmailView(request, eid):
 
 	context = {
 		'emailsetting' : 'active',
-		'item' : item,
+		'email_from' : email_from,
 		'form' : form,
 	}
-	return render(request, 'edit_email.html', context)
+	return render(request, 'edit_email_from.html', context)
 
-def deleteEmailView(request, did):
-	item = SetEmailToList.objects.get(id = did)
-	item.delete()
+def deleteEmailFromView(request, did):
+	email_from = EmailFromList.objects.get(id = did)
+	email_from.delete()
+
 	messages.success(request, 'Email Is Deleted.')
 	return redirect('set-user')
+
 
 
 @login_required(login_url='login')
@@ -280,78 +278,86 @@ def firstStepView(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def secondStepView(request):
-	form = TempEmailListForm()
-	item = TempEmailList.objects.all()
+	temp_form = TempEmailListForm()
+	temp_email_list = TempEmailList.objects.all()
 
 	if request.method == "POST":
-		form = TempEmailListForm(request.POST)
+		temp_form = TempEmailListForm(request.POST)
 
-		if form.is_valid():
-			form.save()
+		if temp_form.is_valid():
+			temp_form.save()
 			return redirect('second-step')
 
 	context = {
 		'home' : 'active',
-		'form': form,
-		'item' : item
+		'temp_form': temp_form,
+		'temp_email_list' : temp_email_list
 	}
 	return render(request, '2new_email_list.html', context)
 
 
 def deleteEmailListView(request):
+	#this post is checked from 1stnew_email_list.html bc i was too lazy ro create one
 	if request.method == "POST":
 		form = EmailListForm(request.POST)
 		if form.is_valid():
-			form.save()
+			obj = form.save(commit=False)
+			obj.user = request.user.userprofile
+			obj.save()
 			return redirect('second-step')
 		else:
 			return redirect('first-step')
 
 
-	item = TempEmailList.objects.all()
-	item.delete()
+	temp_email_list = TempEmailList.objects.all()
+	temp_email_list.delete()
 
-	i = EmailList.objects.all().last()
-	i.delete()
+	u = UserProfile.objects.get(user = request.user)
+
+	email_list = EmailList.objects.filter(user = u).last()
+	email_list.delete()
 
 	return redirect('home')
 
 
 def saveEmailListView(request):
-	temp_list = TempEmailList.objects.all()
-	email_list = EmailList.objects.all().last()
+	temp_email_list = TempEmailList.objects.all()
+	u = UserProfile.objects.get(user = request.user)
+	email_list = EmailList.objects.filter(user = u).last()
 
 	empty = []
-	for email in temp_list:
+	for email in temp_email_list:
 		empty.append(email.tempEmailList)
 
 	email_list.emailList = empty
 
 	email_list.save()
-	temp_list.delete()
+	temp_email_list.delete()
 
 	messages.success(request, 'List Added...')
 	return redirect('home')
 
 def selectEmailListView(request, sid):
-	all_item = EmailList.objects.all()
-	item = EmailList.objects.get(id = sid)
+	u = UserProfile.objects.get(user = request.user)
+	email_list = EmailList.objects.filter(user = u)
+	email = EmailList.objects.get(id = sid)
 
-	for i in all_item:
-		i.selectedEmailList = False
-		i.save()
+	for email in email_list:
+		email.selectedEmailList = False
+		email.save()
 
-	item.selectedEmailList = True
-	item.save()
+	email.selectedEmailList = True
+	email.save()
 
 	return redirect('home')
 
 def unselectEmailListView(request):
-	item = EmailList.objects.all()
+	u = UserProfile.objects.get(user = request.user)
+	email_list = EmailList.objects.filter(user = u)
 
-	for i in item:
-		i.selectedEmailList = False
-		i.save()
+	for email in email_list:
+		email.selectedEmailList = False
+		email.save()
 
 	return redirect('home') 
 
@@ -359,23 +365,23 @@ def unselectEmailListView(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def editEmailListView(request, did):
-	email_edit = EmailList.objects.get(id = did)
+	edit_email_list = EmailList.objects.get(id = did)
 
-	email_list = ast.literal_eval(email_edit.emailList)
+	email_list = ast.literal_eval(edit_email_list.emailList)
 
 	context = {
 		'home' : 'active',
-		'email_edit' : email_edit,
+		'edit_email_list' : edit_email_list,
 		'email_list' : email_list,
 	}
 	return render(request,'edit_email_list.html', context)
 
 def deleteListView(request, did):
-	item = EmailList.objects.get(id = did)
+	email = EmailList.objects.get(id = did)
 
-	item.delete()
+	email.delete()
 
-	messages.success(request, item.emailListName + ' List Deleted')
+	messages.success(request, email.emailListName + ' List Deleted')
 
 	return redirect('home')
 
@@ -383,8 +389,8 @@ def deleteListView(request, did):
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def deleteEmailListItemView(request, did, index):
-	email_edit = EmailList.objects.get(id = did)
-	email_list = ast.literal_eval(email_edit.emailList)
+	edit_email_list = EmailList.objects.get(id = did)
+	email_list = ast.literal_eval(edit_email_list.emailList)
 
 	count = 0
 
@@ -393,18 +399,18 @@ def deleteEmailListItemView(request, did, index):
 		if count == index:
 			email_list.remove(e)
 
-	email_edit.emailList = email_list
-	email_edit.save()
+	edit_email_list.emailList = email_list
+	edit_email_list.save()
 
-	if len(email_edit.emailList) == 0:
-		email_edit.delete()
+	if len(edit_email_list.emailList) == 0:
+		edit_email_list.delete()
 
 		messages.success(request, ' List Deleted')
 		return redirect('home')
 
 	context = {
 		'home' : 'active',
-		'email_edit' : email_edit,
+		'edit_email_list' : edit_email_list,
 		'email_list' : email_list
 	}
 

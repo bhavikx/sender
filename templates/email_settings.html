@@ -37,16 +37,14 @@
 			<div class="border rounded-lg text-center text-monospace bg-light p-1 mb-3">	
 				<h5>Email List</h5>
 			</div>
-				<!--div class="btn-group bg-danger rounded-lg shadow-lg mb-2" align=center style="width: 100%">
-					<a class="btn btn-danger rounded-lg text-left" href="{% url 'unselect-email-list' %}" style="width: 95%"-->
-	    	{% for email in email_from_list %}
-				{% if email.isDefault == True %}			
+	    	{% for email_from in email_from_list %}
+				{% if email_from.isDefault == True %}			
 				<div class="btn-group bg-danger rounded-lg shadow-lg mb-2" align="center" style="width: 100%">
-					<a class="btn btn-danger text-left rounded-lg border border-danger" href="{% url 'unset-default' i.id %}" style="width: 95%">
-						<h5>{{ email }}</h5>
+					<a href="{% url 'unset-default' email_from.id %}" class="btn btn-danger text-left rounded-lg border border-danger" style="width: 95%">
+						<h5>{{ email_from }}</h5>
 						<font size=1.8rem>tap to unset - Default From</font>
 					</a>
-					<a href="{% url 'edit-email' i.id %}" class="btn btn-danger rounded-lg border border-danger">
+					<a href="{% url 'edit-email' email_from.id %}" class="btn btn-danger rounded-lg border border-danger">
 						<svg class="bi bi-three-dots-vertical" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 							<path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
 						</svg>
@@ -54,11 +52,11 @@
 				</div>	
 				{% else %}
 				<div class="btn-group bg-light rounded-lg shadow-lg border mb-2" align="center" style="width: 100%">
-					<a class="btn btn-light text-left rounded-lg" href="{% url 'default-email' i.id %}" style="width: 95%">
-						<h5>{{ email }}</h5>
+					<a href="{% url 'default-email' email_from.id %}" class="btn btn-light text-left rounded-lg" style="width: 95%">
+						<h5>{{ email_from }}</h5>
 						<font size=1.8rem>tap to set - Default From</font>
 					</a>
-					<a href="{% url 'edit-email' i.id %}" class="btn btn-light rounded-lg">
+					<a href="{% url 'edit-email' email_from.id %}" class="btn btn-light rounded-lg">
 						<svg class="bi bi-three-dots-vertical" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 							<path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
 						</svg>
