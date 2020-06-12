@@ -12,8 +12,7 @@
 		{% endif %}
 
 		{% for e in email_list %}
-			{{forloop.counter))
-			{% if e.selectedEmailList == True%}
+			{% if e.selectedEmailList == True %}
 				<br><br> <h4>{{e}}</h4>
 			{% endif %}
 		{% endfor %}

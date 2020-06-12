@@ -76,9 +76,9 @@ def sendEmailView(request, eid):
 
 	email_draft = EmailDraft.objects.get(id = eid)
 	email_list = EmailList.objects.filter(user = u)
+	email_from_list = EmailFromList.objects.filter(user = u)
 
 	if request.method == 'POST':
-		email_list = EmailFromList.objects.filter(user = u)
 
 		for e in email_list:
 			if e.selectedEmailList == True:
@@ -86,15 +86,15 @@ def sendEmailView(request, eid):
 
 		to = ast.literal_eval(to_list)
 
-		for i in items:
+		for i in email_from_list:
 			if i.isDefault == True:
-				user = i
+				email_from = i
 	
-		subject = email.emailDraftSubject
-		message = email.emailDraftMessage
+		subject = email_draft.emailDraftSubject
+		message = email_draft.emailDraftMessage
 
-		sender = user.userEmail
-		password = user.userPassword
+		sender = email_from.userEmail
+		password = email_from.userPassword
 
 		var = sender.split("@")[-1]
 
@@ -518,5 +518,4 @@ def editEmailItemView(request, eid, index):
 		for t in temp:
 			for i in range(len(t)):
 				t[i] = t[i].strip("'")
-
 '''
