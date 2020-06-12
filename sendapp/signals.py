@@ -9,6 +9,6 @@ def user_profile(sender, instance, created, **kwargs):
 		group = Group.objects.get(name = 'user')
 		instance.groups.add(group)
 
-		UserPro.objects.create(user = instance, name = instance.username)
+		UserProfile.objects.create(user = instance, name = instance.username)
 
 post_save.connect(user_profile, sender = User)

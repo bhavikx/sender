@@ -12,7 +12,7 @@
 		{% csrf_token %}
 		{{ form | crispy }}
 		<button class="btn btn-success" type="submit">Save Changes</button>
-		<a class="btn btn-danger" href="{% url 'delete-email-draft' email.id %}">
+		<a class="btn btn-danger" href="{% url 'delete-email-draft' email_draft.id %}">
 			Delete
 		</a>
 		<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>

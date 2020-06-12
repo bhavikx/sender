@@ -57,9 +57,14 @@ def logoutView(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def homeView(request):
-	drafts = EmailDraft.objects.all()
-	email_list = EmailList.objects.all()	
-	
+	u = UserProfile.objects.get(user = request.user)
+
+
+	drafts = EmailDraft.objects.filter(user = u).order_by('-timeDraftCreated')
+	email_list = EmailList.objects.filter(user = u)	
+
+	"""print(email_list.user)
+				print(request.user.userprofile)"""
 	context = {
 		'home' : 'active',
 		'drafts' : drafts,
@@ -70,11 +75,13 @@ def homeView(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def sendEmailView(request, eid):
-	email = EmailDraft.objects.get(id = eid)
-	email_list = EmailList.objects.all()
+	u = UserProfile.objects.get(user = request.user)
+
+	email_draft = EmailDraft.objects.get(id = eid)
+	email_list = EmailList.objects.filter(user = u)
 
 	if request.method == 'POST':
-		items = EmailFromList.objects.all()
+		email_list = EmailFromList.objects.filter(user = u)
 
 		for e in email_list:
 			if e.selectedEmailList == True:
@@ -117,16 +124,70 @@ def sendEmailView(request, eid):
 
 	context = {
 		'home' : 'active',
-		'email' : email,
+		'email_draft' : email_draft,
 		'email_list' : email_list
 	}
 	
 	return render(request, 'send_email.html', context)
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles = ['user', 'admin'])
+def createEmailDraftView(request):
+	form = EmailDraftForm()
+
+	if request.method == "POST":
+		form = EmailDraftForm(request.POST)
+
+		if form.is_valid():
+			u = form.save(commit=False)
+			u.user = request.user.userprofile
+			print("request.user")
+			print(u.user)
+			u.save()
+			messages.success(request, 'draft added to list.')
+			return redirect('home')
+
+	context = {
+		'home' : 'active',
+		'form' : form
+	}
+	return render(request, 'email_draft_form.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles = ['user', 'admin'])
+def editEmailDraftView(request, eid):
+	email_draft = EmailDraft.objects.get(id = eid)
+	form = EmailDraftForm(instance = email_draft)
+
+	if request.method == "POST":
+		form = EmailDraftForm(request.POST, instance = email_draft)
+		if form.is_valid:
+			form.save()
+			messages.success(request, 'Email Draft Updated')			
+			return redirect('home')
+
+	context = {
+		'home' : 'active',
+		'email_draft' : email_draft,
+		'form' : form,
+	}
+	return render(request, 'edit_email_draft.html', context)
+
+
+def deleteEmailDraftView(request, eid):
+	email_draft = EmailDraft.objects.get(id = eid)
+
+	email_draft.delete()
+
+	messages.success(request, 'Email Draft Deleted')
+	return redirect('home')
+
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def EmailFromListView(request):
-	form = FromEmailFromListForm()
+	form = EmailFromListForm()
 	item = EmailFromList.objects.all()
 
 	context = {
@@ -202,26 +263,6 @@ def deleteEmailView(request, did):
 	item.delete()
 	messages.success(request, 'Email Is Deleted.')
 	return redirect('set-user')
-
-
-@login_required(login_url='login')
-@allowed_users(allowed_roles = ['user', 'admin'])
-def createEmailDraftView(request):
-	form = EmailDraftForm()
-
-	if request.method == "POST":
-		form = EmailDraftForm(request.POST)
-
-		if form.is_valid():
-			form.save()
-			messages.success(request, 'draft added to list.')
-			return redirect('home')
-
-	context = {
-		'home' : 'active',
-		'form' : form
-	}
-	return render(request, 'email_draft_form.html', context)
 
 
 @login_required(login_url='login')
@@ -313,35 +354,6 @@ def unselectEmailListView(request):
 		i.save()
 
 	return redirect('home') 
-
-
-@login_required(login_url='login')
-@allowed_users(allowed_roles = ['user', 'admin'])
-def editEmailDraftView(request, eid):
-	email = EmailDraft.objects.get(id = eid)
-	form = EmailDraftForm(instance = email)
-
-	if request.method == "POST":
-		form = EmailDraftForm(request.POST, instance = email)
-		if form.is_valid:
-			form.save()
-			messages.success(request, 'Email Draft Updated')			
-			return redirect('home')
-
-	context = {
-		'home' : 'active',
-		'email' : email,
-		'form' : form,
-	}
-	return render(request, 'edit_email_draft.html', context)
-
-def deleteEmailDraftView(request, eid):
-	email = EmailDraft.objects.get(id = eid)
-
-	email.delete()
-
-	messages.success(request, 'Email Draft Deleted')
-	return redirect('home')
 
 
 @login_required(login_url='login')
@@ -525,4 +537,4 @@ def editEmailItemView(request, eid, index):
 		print("temp")
 		print(type(temp))
 		print(temp)
-		'''
+'''

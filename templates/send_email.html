@@ -5,20 +5,30 @@
 <div class="container d-flex justify-content-center">
 <div class="flex-grow-1 w">
 	<div class="card card-body">		
+		TO:
+
+		{% if not email_list %}
+			<h6>-You need to create An Email To List in order to send Email </h5>
+		{% endif %}
+
 		{% for e in email_list %}
+			{{forloop.counter))
 			{% if e.selectedEmailList == True%}
-				TO:<br><br> <h4>{{e}}</h4>
+				<br><br> <h4>{{e}}</h4>
 			{% endif %}
 		{% endfor %}
+
 		<hr>
-		<strong>{{email}}</strong>
+		<strong>{{email_draft}}</strong>
 		<hr>
-		{{email.emailDraftMessage}}
+		{{email_draft.emailDraftMessage}}
 		<hr>
 		<form action="" method="POST">
  		 	{% csrf_token %}
 			<a href="{% url 'home' %}" class="btn btn-secondary">Back!</a>
-			<button type="submit" class="btn btn-info">Send Email ✈</button>
+			{% if email_list %}
+				<button type="submit" class="btn btn-info">Send Email ✈</button>
+			{% endif %}
 		</form>
 	</div>
 </div>
