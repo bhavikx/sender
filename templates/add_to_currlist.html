@@ -11,17 +11,17 @@
 	</div>
 	<form action="" method="POST" class="mb-2">
 		{% csrf_token %}
-		{{ form|crispy }}
+		{{ temp_form|crispy }}
 
 		<button type="submit" class="btn btn-primary mb-2" style="width: 100%">Add</button> <br>
 		<a href="{% url 'delete-edited-email-list' email_list.id %}" class="btn btn-warning">Don't Save, Go Back!</a>
-		<a href="{% url 'save-edited-email-list' email_list.id%}" class="btn btn-success">Save List</a>
+		<a href="{% url 'save-edited-email-list' email_list.id %}" class="btn btn-success">Save Added Emails</a>
 	</form>
 	
 	{% if le != 0 %}
 		<hr>	
 		<h6>new items being added</h6>
-		{% for t in temp %}
+		{% for t in temp_list %}
 			{{t}}<br>
 		{% endfor %}
 	{% endif %}

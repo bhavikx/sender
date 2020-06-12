@@ -11,7 +11,7 @@
 	</div>
 	<form action="" method="POST" class="mb-2">
 		{% csrf_token %}
-		{{ form.tempEmailList|as_crispy_field }}
+		{{ temp_form.tempEmailList|as_crispy_field }}
 		<a type="submit" class="btn btn-secondary" href="{% url 'edit-email-list' eid %}">Back</a>
 		<button type="submit" class="btn btn-success"> Save Changes</button>
 	</form>

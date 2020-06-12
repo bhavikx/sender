@@ -84,14 +84,7 @@ def sendEmailView(request, eid):
 			if e.selectedEmailList == True:
 				to_list = e.emailList
 
-		print("to_list")
-		print(to_list)
-		print(type(to_list))
-
 		to = ast.literal_eval(to_list)
-		print(",,,")
-		print(type(to))
-		print(to)
 
 		for i in items:
 			if i.isDefault == True:
@@ -213,8 +206,6 @@ def defaultEmailView(request, uid):
 	email_from = EmailFromList.objects.get(id=uid)
 
 	for i in email_from_list:
-		print(i)
-		print(i.isDefault)
 		i.isDefault = False
 		i.save()
 
@@ -385,6 +376,42 @@ def deleteListView(request, did):
 
 	return redirect('home')
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles = ['user', 'admin'])
+def addToCurrlistView(request, eid):
+	temp_form = TempEmailListForm()
+	email_list = EmailList.objects.get(id = eid)
+
+	temp_list = TempEmailList.objects.all()
+	le = len(temp_list)
+	temp_list = reversed(temp_list)
+
+	items = ast.literal_eval(email_list.emailList)
+	email_items = reversed(items)
+
+	if request.method == 'POST':
+		form = TempEmailListForm(request.POST)
+
+		if form.is_valid:
+			form.save()
+			return redirect('add-to-currlist', eid)
+
+	context = {
+		'home' : 'active',
+		'temp_form' : temp_form,
+		'email_list' : email_list,
+		'email_items' : email_items,
+		'temp_list' : temp_list,
+		'le' : le
+		}
+	return render(request, 'add_to_currlist.html', context)
+
+
+def deleteEditedEmailListView(request, eid):
+	temp_list = TempEmailList.objects.all()
+	temp_list.delete()
+
+	return redirect('edit-email-list', eid)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
@@ -417,36 +444,6 @@ def deleteEmailListItemView(request, did, index):
 	return render(request, "edit_email_list.html", context)
 
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles = ['user', 'admin'])
-def addToCurrlistView(request, eid):
-	form = TempEmailListForm()
-	email_list = EmailList.objects.get(id = eid)
-
-	temp = TempEmailList.objects.all()
-	le = len(temp)
-	temp = reversed(temp)
-
-	items = ast.literal_eval(email_list.emailList)
-	email_items = reversed(items)
-
-	if request.method == 'POST':
-		form = TempEmailListForm(request.POST)
-
-		if form.is_valid:
-			form.save()
-			return redirect('add-to-currlist', eid)
-
-	context = {
-		'home' : 'active',
-		'form' : form,
-		'email_list' : email_list,
-		'email_items' : email_items,
-		'temp' : temp,
-		'le' : le
-		}
-	return render(request, 'add_to_currlist.html', context)
-
 def saveEditedEmailListView(request, eid):
 	temp_list = TempEmailList.objects.all()
 	email_list = EmailList.objects.get(id = eid)
@@ -465,18 +462,11 @@ def saveEditedEmailListView(request, eid):
 	return redirect('edit-email-list', eid)
 
 
-def deleteEditedEmailListView(request, eid):
-	delete_item = TempEmailList.objects.all()
-	delete_item.delete()
-
-	return redirect('edit-email-list', eid)
-
-
 @login_required(login_url='login')
 @allowed_users(allowed_roles = ['user', 'admin'])
 def editEmailItemView(request, eid, index):
-	email_edit = EmailList.objects.get(id=eid)
-	email_list = ast.literal_eval(email_edit.emailList)
+	edit_email_list = EmailList.objects.get(id=eid)
+	email_list = ast.literal_eval(edit_email_list.emailList)
 
 	count = 0
 
@@ -489,39 +479,30 @@ def editEmailItemView(request, eid, index):
 
 	temp_email = TempEmailList.objects.create(tempEmailList = item)
 
-	form = TempEmailListForm(instance = temp_email)
+	temp_form = TempEmailListForm(instance = temp_email)
 
 	if request.method == "POST":
-		form = TempEmailListForm(request.POST, instance = temp_email)
+		temp_form = TempEmailListForm(request.POST, instance = temp_email)
 
-		if form.is_valid:
-			form.save()
+		if temp_form.is_valid:
+			temp_form.save()
 
 			for i in range(len(email_list)):
-				print(i)
-				print(index)
 				if i == index-1:
-					print(temp_email.tempEmailList)
 					email_list[i] = temp_email.tempEmailList
-					print(email_list[i])
 
-			email_edit.emailList = email_list
-			email_edit.save()
-
-			print("-")
-			print(email_list)
-			print("..")
-			print(email_edit.emailList)
+			edit_email_list.emailList = email_list
+			edit_email_list.save()
 
 			TempEmailList.objects.all().delete()
 
-			return redirect('edit-email-list', email_edit.id)
+			return redirect('edit-email-list', edit_email_list.id)
 
 
 	temp_email.delete()
 	context = {
 		'home' : 'active',
-		'form' : form,
+		'temp_form' : temp_form,
 		'eid' : eid,
 	}
 	return render(request, "edit_email_item.html", context)
@@ -534,13 +515,8 @@ def editEmailItemView(request, eid, index):
 
 		temp = [i.replace('"', "").strip('[]').split(', ') for i in temp]
 
-		print(type(temp))
-		print(temp)
 		for t in temp:
 			for i in range(len(t)):
 				t[i] = t[i].strip("'")
 
-		print("temp")
-		print(type(temp))
-		print(temp)
 '''
