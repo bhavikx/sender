@@ -4,24 +4,29 @@
 	
 <div class="container d-flex justify-content-center">
 <div class="flex-grow-1 w">
-	<div class="card card-body">		
-		TO:
-
-		{% if not email_list %}
-			<h6>-You need to create An Email To List in order to send Email </h5>
-		{% endif %}
-
-		{% for e in email_list %}
-			{% if e.selectedEmailList == True %}
-				<br><br> <h4>{{e}}</h4>
+	<div class="card card-body">
+		FROM:
+		{% for i in email_from_list %}
+			{%if i.isDefault == True %}
+				<h4>{{i.userEmail}}</h4>
 			{% endif %}
 		{% endfor %}
 
 		<hr>
-		<strong>{{email_draft}}</strong>
+		TO:
+		{% for e in email_list %}
+			{% if e.selectedEmailList == True %}
+				<h4>{{e}}</h4>
+			{% endif %}
+		{% endfor %}
+
 		<hr>
-		{{email_draft.emailDraftMessage}}
+		SUBJECT: {{email_draft}}
 		<hr>
+		MESSAGE: {{email_draft.emailDraftMessage}}
+		<br>
+		<br>
+		<br>
 		<form action="" method="POST">
  		 	{% csrf_token %}
 			<a href="{% url 'home' %}" class="btn btn-secondary">Back!</a>

@@ -78,17 +78,36 @@ def sendEmailView(request, eid):
 	email_list = EmailList.objects.filter(user = u)
 	email_from_list = EmailFromList.objects.filter(user = u)
 
+	
+
 	if request.method == 'POST':
+
+		flag = 0
+		email_from = ""
+
+		for i in email_from_list:
+			if i.isDefault == True:
+				print(i)
+				print(i.userEmail)
+				email_from = i
 
 		for e in email_list:
 			if e.selectedEmailList == True:
 				to_list = e.emailList
+			else:
+				flag = 1
+
+		if flag == 1 and email_from == "":
+			messages.warning(request,'oops.. it looks like you forgot to select Email From and Email To list!')				
+			return redirect('home')
+		elif email_from == "":
+			messages.warning(request,'oops.. it looks like you forgot to select Email From!')				
+			return redirect('home')
+		elif flag == 1:
+			messages.warning(request,'oops.. it looks like you forgot to select Email To list!')				
+			return redirect('home')
 
 		to = ast.literal_eval(to_list)
-
-		for i in email_from_list:
-			if i.isDefault == True:
-				email_from = i
 	
 		subject = email_draft.emailDraftSubject
 		message = email_draft.emailDraftMessage
@@ -115,7 +134,8 @@ def sendEmailView(request, eid):
 	context = {
 		'home' : 'active',
 		'email_draft' : email_draft,
-		'email_list' : email_list
+		'email_list' : email_list,
+		'email_from_list' : email_from_list,
 	}
 	
 	return render(request, 'send_email.html', context)
@@ -216,7 +236,7 @@ def defaultEmailView(request, uid):
 
 
 def unsetDefaultView(request, uid):
-	email_from = SetEmailToList.objects.get(id = uid)
+	email_from = EmailFromList.objects.get(id = uid)
 
 	email_from.isDefault = False
 	email_from.save()
